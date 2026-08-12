@@ -1,4 +1,14 @@
 import argparse
+
+# torchlm 0.1.6.x does `from scipy.integrate import simps` at import time (in
+# torchlm/metrics/metrics.py, reached via torchlm.models). SciPy removed that
+# deprecated alias in 1.14; `simpson` is the same function. Must run before
+# `import torchlm`. .venv-bw also carries this in sitecustomize.py, but keep it
+# here so the script works in a freshly built env too.
+import scipy.integrate as _scipy_integrate
+if not hasattr(_scipy_integrate, "simps"):
+    _scipy_integrate.simps = _scipy_integrate.simpson
+
 import torchlm
 import torch
 import cv2
@@ -107,11 +117,11 @@ def main(from_dir_prefix, output_dir_prefix, expanded_ratio, skip_per_frame, shu
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Process some integers.')
-    parser.add_argument('--from_dir_prefix', type=str, default='data_processing/raw_data/',
+    parser.add_argument('--from_dir_prefix', type=str, default='/teamspace/studios/this_studio/imt/assets/identities',
                         help='input directory where raw videos are stored')
     parser.add_argument('--output_dir_prefix', type=str, default='data_processing/cropped_faces/',
                         help='output directory where cropped faces will be stored')
-    parser.add_argument('--expanded_ratio', type=float, default=0.6,
+    parser.add_argument('--expanded_ratio', type=float, default=1.2,
                         help='ratio to expand the bounding box for cropping, the larger the value, the smaller the face')
     parser.add_argument('--skip_per_frame', type=int, default=25,
                         help='number of frames to skip before detecting the face again, here it defaults to detecting the face position every 25 frames, only a rough calculation of the face position in the frame is needed, not too large')

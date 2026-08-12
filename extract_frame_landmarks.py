@@ -1,4 +1,13 @@
 import argparse
+
+# torchlm 0.1.6.x does `from scipy.integrate import simps` at import time (in
+# torchlm/metrics/metrics.py, pulled in by torchlm/models). SciPy removed that
+# deprecated alias in 1.14; `simpson` is the same function under its real name.
+# Must run before `import torchlm`.
+import scipy.integrate as _scipy_integrate
+if not hasattr(_scipy_integrate, "simps"):
+    _scipy_integrate.simps = _scipy_integrate.simpson
+
 import torchlm
 import torch
 
