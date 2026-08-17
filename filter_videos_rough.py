@@ -1,7 +1,10 @@
 import argparse
 import os
 import shutil
-from moviepy.editor import VideoFileClip
+try:
+    from moviepy import VideoFileClip  # moviepy >= 2.0
+except ImportError:
+    from moviepy.editor import VideoFileClip  # moviepy 1.x
 
 def filter_by_duration(video_path, min_duration):
     try:
