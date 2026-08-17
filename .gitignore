@@ -8,3 +8,4 @@ local_tools
 face_cluster_scripts
 teamspace/studios/this_studio/imt/dataset/
 data_processing/
+__pycache__
